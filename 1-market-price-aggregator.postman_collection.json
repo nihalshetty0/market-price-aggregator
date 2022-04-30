@@ -124,11 +124,20 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
+							"pm.environment.set('pack-convFctr',50)\r",
+							"pm.environment.set('quintal-convFctr',100)\r",
+							"pm.environment.set('user1-market1-price',700)\r",
+							"pm.environment.set('user2-market1-price',1600)\r",
+							"pm.environment.set('user1-market2-price',800)\r",
+							"pm.environment.set('user2-market2-price',1500)\r",
+							"pm.environment.set('user1-market2-tomato',750)\r",
+							"pm.environment.set('user2-market2-tomato',1700)\r",
+							"\r",
 							"const marketID = Math.floor(Math.random()*1000000000000)\r",
-							"pm.globals.set('marketID-1', marketID)\r",
+							"pm.environment.set('marketID-1', marketID)\r",
 							"\r",
 							"const userID = Date.now().toString()\r",
-							"pm.globals.set(\"userID-1\", userID)"
+							"pm.environment.set(\"userID-1\", userID)"
 						],
 						"type": "text/javascript"
 					}
@@ -185,7 +194,7 @@
 					"script": {
 						"exec": [
 							"const userID = Date.now().toString()\r",
-							"pm.globals.set(\"userID-2\", userID)\r",
+							"pm.environment.set(\"userID-2\", userID)\r",
 							""
 						],
 						"type": "text/javascript"
@@ -203,7 +212,7 @@
 							"\r",
 							"pm.test('Report generated successfully', ()=>{\r",
 							"    pm.expect(jsonData.status).to.eql('success')\r",
-							"    pm.globals.set(\"reportID\", jsonData.reportID)\r",
+							"    pm.environment.set(\"reportID\", jsonData.reportID)\r",
 							"    console.log(jsonData.reportID, pm.variables.get('reportID'))\r",
 							"})\r",
 							""
@@ -265,9 +274,9 @@
 							"    pm.expect(jsonData).to.have.property('price')\r",
 							"})\r",
 							"\r",
-							"const priceByUser1 = parseInt(pm.globals.get('user1-market1-price'))/parseInt(pm.globals.get('pack-convFctr'))\r",
+							"const priceByUser1 = parseInt(pm.environment.get('user1-market1-price'))/parseInt(pm.environment.get('pack-convFctr'))\r",
 							"\r",
-							"const priceByUser2 = parseInt(pm.globals.get('user2-market1-price'))/parseInt(pm.globals.get('quintal-convFctr'))\r",
+							"const priceByUser2 = parseInt(pm.environment.get('user2-market1-price'))/parseInt(pm.environment.get('quintal-convFctr'))\r",
 							"\r",
 							"const expectedAggregatePrice = (priceByUser1 + priceByUser2)/2\r",
 							"\r",
@@ -306,7 +315,7 @@
 					"script": {
 						"exec": [
 							"const marketID = Math.floor(Math.random()*1000000000000)\r",
-							"pm.globals.set('marketID-2', marketID)\r",
+							"pm.environment.set('marketID-2', marketID)\r",
 							""
 						],
 						"type": "text/javascript"
@@ -383,7 +392,7 @@
 							"})\r",
 							"\r",
 							"var jsonData = pm.response.json()\r",
-							"pm.globals.set(\"reportID2\", jsonData.reportID)"
+							"pm.environment.set(\"reportID2\", jsonData.reportID)"
 						],
 						"type": "text/javascript"
 					}
@@ -433,9 +442,9 @@
 							"    pm.expect(jsonData).to.have.property('price')\r",
 							"})\r",
 							"\r",
-							"const priceByUser1 = parseInt(pm.globals.get('user1-market2-price'))/parseInt(pm.globals.get('pack-convFctr'))\r",
+							"const priceByUser1 = parseInt(pm.environment.get('user1-market2-price'))/parseInt(pm.environment.get('pack-convFctr'))\r",
 							"\r",
-							"const priceByUser2 = parseInt(pm.globals.get('user2-market2-price'))/parseInt(pm.globals.get('quintal-convFctr'))\r",
+							"const priceByUser2 = parseInt(pm.environment.get('user2-market2-price'))/parseInt(pm.environment.get('quintal-convFctr'))\r",
 							"\r",
 							"const expectedAggregatePrice = (priceByUser1 + priceByUser2)/2\r",
 							"\r",
@@ -557,7 +566,7 @@
 							"})\r",
 							"\r",
 							"var jsonData = pm.response.json()\r",
-							"pm.globals.set(\"reportID3\", jsonData.reportID)"
+							"pm.environment.set(\"reportID3\", jsonData.reportID)"
 						],
 						"type": "text/javascript"
 					}
@@ -607,9 +616,9 @@
 							"    pm.expect(jsonData).to.have.property('price')\r",
 							"})\r",
 							"\r",
-							"const priceByUser1 = parseInt(pm.globals.get('user1-market2-tomato'))/parseInt(pm.globals.get('pack-convFctr'))\r",
+							"const priceByUser1 = parseInt(pm.environment.get('user1-market2-tomato'))/parseInt(pm.environment.get('pack-convFctr'))\r",
 							"\r",
-							"const priceByUser2 = parseInt(pm.globals.get('user2-market2-tomato'))/parseInt(pm.globals.get('quintal-convFctr'))\r",
+							"const priceByUser2 = parseInt(pm.environment.get('user2-market2-tomato'))/parseInt(pm.environment.get('quintal-convFctr'))\r",
 							"\r",
 							"const expectedAggregatePrice = (priceByUser1 + priceByUser2)/2\r",
 							"\r",
