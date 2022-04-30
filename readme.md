@@ -62,3 +62,6 @@ Run the project by running
   node index
 ```
     
+## Run Test
+
+To run text import ```1-market-price-aggregator.postman_collection.json``` on postman as a collection. Now, click on the three dot menu beside the collection name and click ```Run Collection```. This should replicate the test cases.

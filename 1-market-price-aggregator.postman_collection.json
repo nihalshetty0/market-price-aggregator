@@ -1,0 +1,653 @@
+{
+	"info": {
+		"_postman_id": "c21e62fb-fdd8-48d1-9654-56093a28bc68",
+		"name": "market-price-aggregator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "post report no body",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\",  ()=> {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('Report not generated for missing body', ()=>{\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.msg).to.eql('\"reportDetails\" is required')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report with missing body parameter",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\",  ()=> {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('Report not generated for invalid body', ()=>{\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.msg).to.eql('\"reportDetails.userID\" is required')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reportDetails\":{\r\n        \"marketID\":\"market 400\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report 1 market 1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const marketID = Math.floor(Math.random()*1000000000000)\r",
+							"pm.globals.set('marketID-1', marketID)\r",
+							"\r",
+							"const userID = Date.now().toString()\r",
+							"pm.globals.set(\"userID-1\", userID)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('Report generated successfully', ()=>{\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.status).to.eql('success')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reportDetails\":{\r\n        \"userID\": {{userID-1}},\r\n        \"marketID\": {{marketID-1}},\r\n        \"marketName\": \"Vashi Navi Mumbai\",\r\n        \"cmdtyID\": \"cmdty-1\",\r\n        \"marketType\": \"Mandi\",\r\n        \"cmdtyName\": \"Potato\",\r\n        \"priceUnit\": \"Pack\",\r\n        \"convFctr\": {{pack-convFctr}},\r\n        \"price\": {{user1-market1-price}}\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report 2 market 1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const userID = Date.now().toString()\r",
+							"pm.globals.set(\"userID-2\", userID)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test('Report generated successfully', ()=>{\r",
+							"    pm.expect(jsonData.status).to.eql('success')\r",
+							"    pm.globals.set(\"reportID\", jsonData.reportID)\r",
+							"    console.log(jsonData.reportID, pm.variables.get('reportID'))\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reportDetails\":{\r\n        \"userID\": {{userID-2}},\r\n        \"marketID\": {{marketID-1}},\r\n        \"marketName\": \"Vashi Navi Mumbai\",\r\n        \"cmdtyID\": \"cmdty-1\",\r\n        \"cmdtyName\": \"Potato\",\r\n        \"priceUnit\": \"Quintal\",\r\n        \"convFctr\": {{quintal-convFctr}},\r\n        \"price\": {{user2-market1-price}}\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get aggregated report",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// console.log(pm.variables.set('reportID'))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test('Aggregate price retrieved successfully', ()=>{\r",
+							"    pm.expect(jsonData).to.have.property('price')\r",
+							"})\r",
+							"\r",
+							"const priceByUser1 = parseInt(pm.globals.get('user1-market1-price'))/parseInt(pm.globals.get('pack-convFctr'))\r",
+							"\r",
+							"const priceByUser2 = parseInt(pm.globals.get('user2-market1-price'))/parseInt(pm.globals.get('quintal-convFctr'))\r",
+							"\r",
+							"const expectedAggregatePrice = (priceByUser1 + priceByUser2)/2\r",
+							"\r",
+							"pm.test('Aggregated price is correct',()=>{\r",
+							"    pm.expect(jsonData.price).to.eq(expectedAggregatePrice)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/reports/reportID/{{reportID}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports",
+						"reportID",
+						"{{reportID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report 1 market 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const marketID = Math.floor(Math.random()*1000000000000)\r",
+							"pm.globals.set('marketID-2', marketID)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('Report generated successfully', ()=>{\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.status).to.eql('success')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reportDetails\":{\r\n        \"userID\": {{userID-1}},\r\n        \"marketID\": {{marketID-2}},\r\n        \"marketName\": \"Delhi\",\r\n        \"cmdtyID\": \"cmdty-1\",\r\n        \"marketType\": \"Mandi\",\r\n        \"cmdtyName\": \"Potato\",\r\n        \"priceUnit\": \"Pack\",\r\n        \"convFctr\": {{pack-convFctr}},\r\n        \"price\": {{user1-market2-price}}\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report 2 market 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('Report generated successfully', ()=>{\r",
+							"var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.status).to.eql('success')\r",
+							"})\r",
+							"\r",
+							"var jsonData = pm.response.json()\r",
+							"pm.globals.set(\"reportID2\", jsonData.reportID)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reportDetails\":{\r\n        \"userID\": {{userID-2}},\r\n        \"marketID\": {{marketID-2}},\r\n        \"marketName\": \"Delhi\",\r\n        \"cmdtyID\": \"cmdty-1\",\r\n        \"cmdtyName\": \"Potato\",\r\n        \"priceUnit\": \"Quintal\",\r\n        \"convFctr\": {{quintal-convFctr}},\r\n        \"price\": {{user2-market2-price}}\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get market 2 aggregated report",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test('Aggregate price retrieved successfully', ()=>{\r",
+							"    pm.expect(jsonData).to.have.property('price')\r",
+							"})\r",
+							"\r",
+							"const priceByUser1 = parseInt(pm.globals.get('user1-market2-price'))/parseInt(pm.globals.get('pack-convFctr'))\r",
+							"\r",
+							"const priceByUser2 = parseInt(pm.globals.get('user2-market2-price'))/parseInt(pm.globals.get('quintal-convFctr'))\r",
+							"\r",
+							"const expectedAggregatePrice = (priceByUser1 + priceByUser2)/2\r",
+							"\r",
+							"pm.test('Aggregated price is correct and is independent of market 1 price',()=>{\r",
+							"    pm.expect(jsonData.price).to.eq(expectedAggregatePrice)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/reports/reportID/{{reportID2}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports",
+						"reportID",
+						"{{reportID2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report 1 market 2 cmty-2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('Report generated successfully', ()=>{\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.status).to.eql('success')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reportDetails\":{\r\n        \"userID\": {{userID-1}},\r\n        \"marketID\": {{marketID-2}},\r\n        \"marketName\": \"Delhi\",\r\n        \"cmdtyID\": \"cmdty-2\",\r\n        \"marketType\": \"Mandi\",\r\n        \"cmdtyName\": \"Tomato\",\r\n        \"priceUnit\": \"Pack\",\r\n        \"convFctr\": {{pack-convFctr}},\r\n        \"price\": {{user1-market2-tomato}}\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post report 2 market 2 cmty-2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('Report generated successfully', ()=>{\r",
+							"var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.status).to.eql('success')\r",
+							"})\r",
+							"\r",
+							"var jsonData = pm.response.json()\r",
+							"pm.globals.set(\"reportID3\", jsonData.reportID)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"reportDetails\":{\r\n        \"userID\": {{userID-2}},\r\n        \"marketID\": {{marketID-2}},\r\n        \"marketName\": \"Delhi\",\r\n        \"cmdtyID\": \"cmdty-2\",\r\n        \"cmdtyName\": \"Tomato\",\r\n        \"priceUnit\": \"Quintal\",\r\n        \"convFctr\": {{quintal-convFctr}},\r\n        \"price\": {{user2-market2-tomato}}\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get market 2 cmty-2 aggregated report",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  ()=> {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json()\r",
+							"\r",
+							"pm.test('Aggregate price retrieved successfully', ()=>{\r",
+							"    pm.expect(jsonData).to.have.property('price')\r",
+							"})\r",
+							"\r",
+							"const priceByUser1 = parseInt(pm.globals.get('user1-market2-tomato'))/parseInt(pm.globals.get('pack-convFctr'))\r",
+							"\r",
+							"const priceByUser2 = parseInt(pm.globals.get('user2-market2-tomato'))/parseInt(pm.globals.get('quintal-convFctr'))\r",
+							"\r",
+							"const expectedAggregatePrice = (priceByUser1 + priceByUser2)/2\r",
+							"\r",
+							"pm.test('Aggregated price is correct and is independent of other commodity',()=>{\r",
+							"    pm.expect(jsonData.price).to.eq(expectedAggregatePrice)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/reports/reportID/{{reportID3}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"reports",
+						"reportID",
+						"{{reportID3}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
